@@ -1,0 +1,79 @@
+Question 21: Create a sample drawing app whose background should be white and where the user just draws something.
+
+Hint 1:- Use the inbuilt paint library of Dart.
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(DrawingApp());
+
+class DrawingApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Simple Drawing App')),
+        body: DrawingBoard(),
+      ),
+    );
+  }
+}
+
+class DrawingBoard extends StatefulWidget {
+  @override
+  _DrawingBoardState createState() => _DrawingBoardState();
+}
+
+class _DrawingBoardState extends State<DrawingBoard> {
+  // List to store points drawn by user
+  List<Offset?> points = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      // Capture user touch events
+      onPanUpdate: (details) {
+        setState(() {
+          RenderBox box = context.findRenderObject() as RenderBox;
+          points.add(box.globalToLocal(details.globalPosition));
+        });
+      },
+      onPanEnd: (details) {
+        setState(() {
+          // Add a separator for distinct strokes
+          points.add(null);
+        });
+      },
+      child: CustomPaint(
+        size: Size.infinite,
+        painter: MyPainter(points),
+        child: Container(
+          color: Colors.white, // White background
+        ),
+      ),
+    );
+  }
+}
+
+class MyPainter extends CustomPainter {
+  final List<Offset?> points;
+
+  MyPainter(this.points);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 4.0;
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        // Draw line between points
+        canvas.drawLine(points[i]!, points[i + 1]!, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant MyPainter oldDelegate) => true;
+}
