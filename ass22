@@ -1,0 +1,89 @@
+Create a Flutter app with two screens, each displaying a numerical value in its user interface. Upon pressing a floating action button on the home page, the value of the number will increase for both screens. Add navigation to switch between the two screens to observe the results. 
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Two Screens Number Increment',
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int number = 0;
+
+  void _incrementNumber() {
+    setState(() {
+      number++;
+    });
+  }
+
+  void _goToSecondScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SecondScreen(number: number),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home Screen'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.navigate_next),
+            onPressed: _goToSecondScreen,
+            tooltip: 'Go to Second Screen',
+          )
+        ],
+      ),
+      body: Center(
+        child: Text(
+          'Number: $number',
+          style: TextStyle(fontSize: 36),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementNumber,
+        child: Icon(Icons.add),
+        tooltip: 'Increment Number',
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  final int number;
+
+  SecondScreen({required this.number});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Second Screen'),
+      ),
+      body: Center(
+        child: Text(
+          'Number: $number',
+          style: TextStyle(fontSize: 36),
+        ),
+      ),
+    );
+  }
+}
+
