@@ -1,0 +1,66 @@
+Question 16: How to Show this result based on the given details:
+
+True-answers=6
+Wrong -answers=0
+Total-questions=6
+
+ Hint 1:- Use imageview and textview, containers for showing the image and text.
+
+Hint 2:- Add the logic for showing the result based on true, and false values out of total questions.
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="#FFFFFF">
+
+    <!-- Progress Circle with Text -->
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100.00%"
+        android:textSize="32sp"
+        android:textColor="#4CAF50"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/resultText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Passed"
+        android:textColor="#4CAF50"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Stats -->
+    <TextView
+        android:id="@+id/statsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: 6 | Correct: 6 | Wrong: 0"
+        android:textSize="18sp"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Trophy Image -->
+    <ImageView
+        android:id="@+id/trophyImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/trophy"
+        android:contentDescription="Trophy"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Congratulations Message -->
+    <TextView
+        android:id="@+id/congratsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Congratulations! You are passed."
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000"/>
+</LinearLayout>
