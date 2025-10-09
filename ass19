@@ -1,0 +1,78 @@
+Question 24: You have two buttons A & B . When you click on the A button the image will be shown and you click on the B button then your name, phone number, and email will be shown. How will you achieve this problem statement?
+
+Hint 1:- Add the flag to show the different-2 data on click of buttons.
+
+Hint 2:- Add text in the column for showing the name, phone number, and email.
+
+Hint 3:- Add imageView to show the image.
+
+Hint 4:- Add the image to the assets folder.
+import 'package:flutter/material.dart';
+
+enum DisplayContent { image, details }
+
+class ButtonToggleContent extends StatefulWidget {
+  @override
+  _ButtonToggleContentState createState() => _ButtonToggleContentState();
+}
+
+class _ButtonToggleContentState extends State<ButtonToggleContent> {
+  DisplayContent _currentContent = DisplayContent.details;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Show Image or Details')),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Buttons Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentContent = DisplayContent.image;
+                    });
+                  },
+                  child: Text('Button A'),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentContent = DisplayContent.details;
+                    });
+                  },
+                  child: Text('Button B'),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 40),
+
+            // Conditional display based on flag
+            Expanded(
+              child: Center(
+                child: _currentContent == DisplayContent.image
+                    ? Image.asset('assets/sample_image.png', width: 200, height: 200)
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Name: John Doe', style: TextStyle(fontSize: 20)),
+                          SizedBox(height: 10),
+                          Text('Phone: +1 234 567 8900', style: TextStyle(fontSize: 20)),
+                          SizedBox(height: 10),
+                          Text('Email: johndoe@example.com', style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
