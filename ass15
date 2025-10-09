@@ -1,0 +1,102 @@
+Question 19: Create the form which consists firstName, lastName, phoneNumber, email, and all scenarios mentioned below:-
+
+● firstName and lastName should be a minimum character of 5 and a maximum of 15.
+● Add proper validation for email.
+● phoneNumber should be 10 digits and valid.
+
+How will you achieve this problem statement?
+
+Hint 1:- Only use FormBuilderTextField. 
+
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+
+class UserForm extends StatefulWidget {
+  @override
+  _UserFormState createState() => _UserFormState();
+}
+
+class _UserFormState extends State<UserForm> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilder(
+      key: _formKey,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+
+            // First Name
+            FormBuilderTextField(
+              name: 'firstName',
+              decoration: InputDecoration(labelText: 'First Name'),
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(context, errorText: 'Required'),
+                FormBuilderValidators.minLength(context, 5, errorText: 'Min 5 characters'),
+                FormBuilderValidators.maxLength(context, 15, errorText: 'Max 15 characters'),
+              ]),
+            ),
+
+            SizedBox(height: 16),
+
+            // Last Name
+            FormBuilderTextField(
+              name: 'lastName',
+              decoration: InputDecoration(labelText: 'Last Name'),
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(context, errorText: 'Required'),
+                FormBuilderValidators.minLength(context, 5, errorText: 'Min 5 characters'),
+                FormBuilderValidators.maxLength(context, 15, errorText: 'Max 15 characters'),
+              ]),
+            ),
+
+            SizedBox(height: 16),
+
+            // Phone Number
+            FormBuilderTextField(
+              name: 'phoneNumber',
+              decoration: InputDecoration(labelText: 'Phone Number'),
+              keyboardType: TextInputType.phone,
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(context, errorText: 'Required'),
+                FormBuilderValidators.numeric(context, errorText: 'Digits only'),
+                FormBuilderValidators.minLength(context, 10, errorText: 'Must be 10 digits'),
+                FormBuilderValidators.maxLength(context, 10, errorText: 'Must be 10 digits'),
+              ]),
+            ),
+
+            SizedBox(height: 16),
+
+            // Email
+            FormBuilderTextField(
+              name: 'email',
+              decoration: InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(context, errorText: 'Required'),
+                FormBuilderValidators.email(context, errorText: 'Invalid email'),
+              ]),
+            ),
+
+            SizedBox(height: 24),
+
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState?.saveAndValidate() ?? false) {
+                  final formData = _formKey.currentState!.value;
+                  print('Form Data: $formData');
+                  // Further processing
+                } else {
+                  print('Validation failed');
+                }
+              },
+              child: Text('Submit'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
