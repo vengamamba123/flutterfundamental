@@ -1,0 +1,19 @@
+Create a Flutter application using Riverpod state management where pressing a button changes the background color of the appBar and Scaffold, as well as plays one of 10 music notes. 
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.3.6
+  just_audio: ^0.9.32
+
+flutter:
+  assets:
+    - assets/notes/note1.mp3
+    - assets/notes/note2.mp3
+    - assets/notes/note3.mp3
+    - assets/notes/note4.mp3
+    - assets/notes/note5.mp3
+    - assets/notes/note6.mp3
+    - assets/notes/note7.mp3
+    - assets/notes/note8.mp3
+    - assets/notes/note9.mp3
+    - assets/notes/note10.mp3
