@@ -1,0 +1,39 @@
+Question 17: Show the start and end date in the date picker. But the end date should be 29 days ago from the start date. What will be your approach to getting this problem statement?
+
+
+Hint 1:- Use the date picker library for selecting the start and end date.
+
+Hint 2:- Add the logic which is end data should be 29 days ago from the start date.
+
+// Variables to hold dates
+var startDate: Calendar = Calendar.getInstance()
+var endDate: Calendar = Calendar.getInstance()
+
+fun showStartDatePicker() {
+    val year = startDate.get(Calendar.YEAR)
+    val month = startDate.get(Calendar.MONTH)
+    val day = startDate.get(Calendar.DAY_OF_MONTH)
+
+    DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+        // Set start date from picker
+        startDate.set(selectedYear, selectedMonth, selectedDay)
+
+        // Calculate end date (29 days before start)
+        endDate.time = startDate.time
+        endDate.add(Calendar.DAY_OF_MONTH, -29)
+
+        // Show the dates (update UI or another date picker)
+        updateDateUI()
+    }, year, month, day).show()
+}
+
+fun updateDateUI() {
+    // Format and show dates in TextViews or date pickers
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    val startDateString = sdf.format(startDate.time)
+    val endDateString = sdf.format(endDate.time)
+
+    startDateTextView.text = "Start Date: $startDateString"
+    endDateTextView.text = "End Date: $endDateString"
+}
