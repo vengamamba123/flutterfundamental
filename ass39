@@ -1,0 +1,131 @@
+Create a Flutter program to fetch all image links and accompanying text from a Firestore collection and present them in cards with a left-to-right slide transition effect. Ensure the cards are scrollable.
+source code
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: SlideCardsPage(),
+    debugShowCheckedModeBanner: false,
+  ));
+}
+
+class SlideCardsPage extends StatefulWidget {
+  @override
+  _SlideCardsPageState createState() => _SlideCardsPageState();
+}
+
+class _SlideCardsPageState extends State<SlideCardsPage> with TickerProviderStateMixin {
+  final CollectionReference postsCollection = FirebaseFirestore.instance.collection('posts');
+
+  late List<AnimationController> _controllers;
+  late List<Animation<Offset>> _animations;
+
+  @override
+  void dispose() {
+    // Dispose all animation controllers
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  // Initialize animations when data changes
+  void _initAnimations(int itemCount) {
+    _controllers = List.generate(
+      itemCount,
+      (index) => AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 500),
+      ),
+    );
+
+    _animations = _controllers.map((controller) {
+      return Tween<Offset>(
+        begin: Offset(-1.5, 0),  // Start offscreen left
+        end: Offset.zero,
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+    }).toList();
+
+    // Stagger animations
+    for (int i = 0; i < _controllers.length; i++) {
+      Future.delayed(Duration(milliseconds: i * 200), () {
+        if (mounted) _controllers[i].forward();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Firestore Slide Cards'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: postsCollection.snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error loading posts'));
+          }
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final docs = snapshot.data!.docs;
+          if (docs.isEmpty) {
+            return Center(child: Text('No posts found'));
+          }
+
+          // Initialize animations based on number of documents
+          _initAnimations(docs.length);
+
+          return ListView.builder(
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final data = docs[index].data() as Map<String, dynamic>;
+              final imageUrl = data['imageUrl'] ?? '';
+              final description = data['text'] ?? '';
+
+              return SlideTransition(
+                position: _animations[index],
+                child: Card(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  elevation: 4,
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        if (imageUrl.isNotEmpty)
+                          Image.network(
+                            imageUrl,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          )
+                        else
+                          Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.grey[300],
+                            child: Icon(Icons.image, size: 40),
+                          ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            description,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
