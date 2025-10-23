@@ -1,0 +1,44 @@
+ Create a Form with two TextFormFields that require user input and a button to submit the form. Use the Provider package to pass the form data to another widget.
+sourcecode
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+/// Provider class to hold and update form data
+class FormDataProvider with ChangeNotifier {
+  String _name = '';
+  String _email = '';
+
+  String get name => _name;
+  String get email => _email;
+
+  void updateData(String name, String email) {
+    _name = name;
+    _email = email;
+    notifyListeners();
+  }
+}
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => FormDataProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Provider Form Example',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: FormScreen(),
+    );
+  }
+}
+
+class FormScreen extends StatefulWidget {
+  @override
+  _FormScreenState createState() => _FormScreenState();
+}
