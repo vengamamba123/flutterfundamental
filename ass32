@@ -1,0 +1,76 @@
+Create a simple Provider that provides a counter value and a button to increment the counter. Display the counter value in another widget.
+source code
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+/// STEP 1: Create a Counter Provider
+class CounterProvider with ChangeNotifier {
+  int _count = 0;
+
+  int get count => _count;
+
+  void increment() {
+    _count++;
+    notifyListeners(); // Notifies all listening widgets to rebuild
+  }
+}
+
+void main() {
+  runApp(
+    /// STEP 2: Wrap the app with ChangeNotifierProvider
+    ChangeNotifierProvider(
+      create: (_) => CounterProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Provider Counter Example',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: CounterScreen(),
+    );
+  }
+}
+
+/// STEP 3: Create the main screen
+class CounterScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final counter = Provider.of<CounterProvider>(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Provider Counter Example')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            DisplayCounterWidget(), // shows counter in a separate widget
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: counter.increment,
+              child: Text('Increment Counter'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// STEP 4: Create another widget that displays the counter value
+class DisplayCounterWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    print("DisplayCounterWidget rebuilt"); // for demo
+    final count = Provider.of<CounterProvider>(context).count;
+
+    return Text(
+      'Counter Value: $count',
+      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    );
+  }
+}
