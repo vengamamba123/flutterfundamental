@@ -1,0 +1,54 @@
+ Create a simple TextFormField that displays a label and saves the user input to a variable.
+source code
+import 'package:flutter/material.dart';
+
+class SimpleTextFormFieldExample extends StatefulWidget {
+  @override
+  _SimpleTextFormFieldExampleState createState() =>
+      _SimpleTextFormFieldExampleState();
+}
+
+class _SimpleTextFormFieldExampleState
+    extends State<SimpleTextFormFieldExample> {
+  final _formKey = GlobalKey<FormState>();
+  String _userInput = ''; // variable to store user input
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('TextFormField Example')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey, // connects form state
+          child: Column(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Enter your name',
+                  border: OutlineInputBorder(),
+                ),
+                onSaved: (value) {
+                  _userInput = value ?? '';
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                child: Text('Save'),
+                onPressed: () {
+                  // Save the form input
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Saved: $_userInput')),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
