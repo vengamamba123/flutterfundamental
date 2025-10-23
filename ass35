@@ -1,0 +1,43 @@
+Write a Flutter program to construct a container similar to the one shown below:
+sourcecode
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: Scaffold(body: Center(child: CustomContainer()))));
+}
+
+class CustomContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      height: 60,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.cyanAccent[200],
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(30),
+          topRight: Radius.circular(10),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.purpleAccent.withOpacity(0.7),
+            spreadRadius: 4,
+            blurRadius: 10,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Text(
+        "Hello I'm",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+          fontSize: 18,
+        ),
+      ),
+    );
+  }
+}
