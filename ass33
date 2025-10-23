@@ -1,0 +1,111 @@
+Create a Provider that provides a list of strings and a function to add new strings to the list. Display the list in another widget.
+sourcecode
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+/// STEP 1: Create the Provider class
+class StringListProvider with ChangeNotifier {
+  final List<String> _items = [];
+
+  List<String> get items => _items;
+
+  void addString(String newString) {
+    if (newString.isNotEmpty) {
+      _items.add(newString);
+      notifyListeners(); // Notifies listeners that data changed
+    }
+  }
+}
+
+void main() {
+  runApp(
+    /// STEP 2: Wrap app in ChangeNotifierProvider
+    ChangeNotifierProvider(
+      create: (_) => StringListProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+/// STEP 3: Root Widget
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Provider List Example',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: StringListScreen(),
+    );
+  }
+}
+
+/// STEP 4: Main screen for displaying and adding strings
+class StringListScreen extends StatefulWidget {
+  @override
+  _StringListScreenState createState() => _StringListScreenState();
+}
+
+class _StringListScreenState extends State<StringListScreen> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final stringProvider = Provider.of<StringListProvider>(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Provider List Example')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            /// Text Field for input
+            TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                labelText: 'Enter new item',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 10),
+
+            /// Button to add new string
+            ElevatedButton(
+              onPressed: () {
+                stringProvider.addString(_controller.text);
+                _controller.clear();
+              },
+              child: Text('Add to List'),
+            ),
+            SizedBox(height: 20),
+
+            /// Display the list
+            Expanded(
+              child: StringListWidget(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// STEP 5: Widget that displays the list
+class StringListWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final items = Provider.of<StringListProvider>(context).items;
+
+    return items.isEmpty
+        ? Center(child: Text('No items added yet.'))
+        : ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  title: Text(items[index]),
+                ),
+              );
+            },
+          );
+  }
+}
