@@ -1,0 +1,58 @@
+ Your client has asked you to display each user's email and name from their Firestore collection named "users" in your application. Utilize the ListTile widget for presentation.
+source code
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: UsersListPage(),
+  ));
+}
+
+class UsersListPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Reference to 'users' collection in Firestore
+    final CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Users List')),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: usersCollection.snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error loading users'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          // Extract user documents
+          final usersDocs = snapshot.data!.docs;
+
+          if (usersDocs.isEmpty) {
+            return Center(child: Text('No users found.'));
+          }
+
+          return ListView.builder(
+            itemCount: usersDocs.length,
+            itemBuilder: (context, index) {
+              // Extract data from each document
+              final userData = usersDocs[index].data() as Map<String, dynamic>;
+              final userName = userData['name'] ?? 'No Name';
+              final userEmail = userData['email'] ?? 'No Email';
+
+              return ListTile(
+                leading: Icon(Icons.person),
+                title: Text(userName),
+                subtitle: Text(userEmail),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
