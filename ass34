@@ -1,0 +1,96 @@
+Create a Provider that provides a counter value and a function to reset the counter to zero. Display the counter value in another widget and use a button to reset the counter.
+source code
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+/// Provider class that holds the counter and reset function
+class CounterProvider with ChangeNotifier {
+  int _counter = 0;
+
+  int get counter => _counter;
+
+  /// Increment the counter (optional, but useful for demo)
+  void increment() {
+    _counter++;
+    notifyListeners();
+  }
+
+  /// Reset the counter to zero
+  void reset() {
+    _counter = 0;
+    notifyListeners();
+  }
+}
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CounterProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+/// Root widget
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Counter Reset with Provider',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: CounterScreen(),
+    );
+  }
+}
+
+/// Main screen showing the counter and reset button
+class CounterScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final counterProvider = Provider.of<CounterProvider>(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Counter with Reset')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Counter value:',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 8),
+            /// Display counter value
+            Text(
+              '${counterProvider.counter}',
+              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+
+            /// Button to increment (optional)
+            ElevatedButton(
+              onPressed: () {
+                counterProvider.increment();
+              },
+              child: Text('Increment'),
+            ),
+
+            SizedBox(height: 20),
+
+            /// Button to reset counter to zero
+            ElevatedButton(
+              onPressed: () {
+                counterProvider.reset();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: Text('Reset to Zero'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+ code
