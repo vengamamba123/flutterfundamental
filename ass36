@@ -1,0 +1,39 @@
+Your employer has asked you to create an animated text feature that transforms its appearance when a user hovers over it.
+sourcecode
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: Scaffold(body: Center(child: HoverAnimatedText()))));
+}
+
+class HoverAnimatedText extends StatefulWidget {
+  @override
+  _HoverAnimatedTextState createState() => _HoverAnimatedTextState();
+}
+
+class _HoverAnimatedTextState extends State<HoverAnimatedText> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => _onHover(true),
+      onExit: (_) => _onHover(false),
+      child: AnimatedDefaultTextStyle(
+        duration: Duration(milliseconds: 300),
+        style: TextStyle(
+          color: _isHovered ? Colors.blue : Colors.black,
+          fontSize: _isHovered ? 32 : 24,
+          fontWeight: _isHovered ? FontWeight.bold : FontWeight.normal,
+        ),
+        child: Text('Hover over me!'),
+      ),
+    );
+  }
+
+  void _onHover(bool hovering) {
+    setState(() {
+      _isHovered = hovering;
+    });
+  }
+}
